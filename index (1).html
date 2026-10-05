@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room Attendance</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  padding:30px;
+  background:linear-gradient(135deg,#0f172a,#312e81,#581c87);
+  color:white;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:35px;
+}
+
+.header h1{
+  font-size:42px;
+  margin-bottom:10px;
+}
+
+.header p{
+  color:#cbd5e1;
+}
+
+.members{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:20px;
+}
+
+.card{
+  padding:25px;
+  text-align:center;
+  border-radius:22px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(15px);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+}
+
+.avatar{
+  width:70px;
+  height:70px;
+  margin:0 auto 15px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+  font-weight:bold;
+  background:linear-gradient(135deg,#8b5cf6,#ec4899);
+}
+
+.card h2{
+  margin-bottom:12px;
+}
+
+.status{
+  margin-bottom:18px;
+  color:#cbd5e1;
+}
+
+.status b{
+  display:block;
+  margin-top:6px;
+  font-size:16px;
+}
+
+.buttons button{
+  border:none;
+  padding:11px 22px;
+  margin:4px;
+  border-radius:10px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.yes{
+  background:#16a34a;
+}
+
+.no{
+  background:#dc2626;
+}
+
+.buttons button:hover{
+  transform:scale(1.07);
+}
+
+.summary{
+  margin-top:35px;
+  padding:25px;
+  text-align:center;
+  border-radius:20px;
+  background:rgba(255,255,255,.10);
+}
+
+.summary h2{
+  margin-bottom:15px;
+}
+
+.summary span{
+  margin:0 15px;
+  font-size:20px;
+}
+
+@media(max-width:600px){
+  body{
+    padding:15px;
+  }
+
+  .header h1{
+    font-size:30px;
+  }
+
+  .summary span{
+    display:block;
+    margin:10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>🏠 Room Attendance</h1>
+    <p>Check whether your roommates are inside or outside</p>
+  </div>
+
+  <div class="members" id="members"></div>
+
+  <div class="summary">
+    <h2>📊 Room Status</h2>
+    <span>🟢 Inside: <b id="inside">0</b></span>
+    <span>🔴 Outside: <b id="outside">8</b></span>
+  </div>
+
+</div>
+
+<script>
+
+const memberNames = [
+  "Member 1",
+  "Member 2",
+  "Member 3",
+  "Member 4",
+  "Member 5",
+  "Member 6",
+  "Member 7",
+  "Member 8"
+];
+
+let members = memberNames.map(name => ({
+  name:name,
+  inside:false
+}));
+
+function renderMembers(){
+
+  const container = document.getElementById("members");
+
+  container.innerHTML="";
+
+  members.forEach((member,index)=>{
+
+    const card=document.createElement("div");
+
+    card.className="card";
+
+    card.innerHTML=`
+
+      <div class="avatar">
+        ${member.name.charAt(0)}
+      </div>
+
+      <h2>${member.name}</h2>
+
+      <div class="status">
+        Current Status
+
+        <b style="color:${member.inside ? '#22c55e' : '#ef4444'}">
+          ${member.inside ? '🟢 INSIDE' : '🔴 OUTSIDE'}
+        </b>
+      </div>
+
+      <div class="buttons">
+
+        <button class="yes"
+          onclick="setStatus(${index},true)">
+          YES
+        </button>
+
+        <button class="no"
+          onclick="setStatus(${index},false)">
+          NO
+        </button>
+
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  updateSummary();
+}
+
+function setStatus(index,value){
+
+  members[index].inside=value;
+
+  renderMembers();
+}
+
+function updateSummary(){
+
+  const inside=members.filter(m=>m.inside).length;
+
+  const outside=members.filter(m=>!m.inside).length;
+
+  document.getElementById("inside").textContent=inside;
+
+  document.getElementById("outside").textContent=outside;
+}
+
+renderMembers();
+
+</script>
+
+</body>
+</html>
